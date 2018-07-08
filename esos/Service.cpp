@@ -71,9 +71,9 @@ void sendRequestString(double *externalHum,
     #endif
 
   
-		req = String(Guid);
-		req.concat(";");
-		req += TimeStamp;
+	req = String(Guid);
+	req.concat(";");
+	req += TimeStamp;
 
     req.concat(",");
     req.concat(*internalTemp);
@@ -81,10 +81,10 @@ void sendRequestString(double *externalHum,
     req.concat(",");
     req.concat(*soilMoisture);
 
-		req.concat(",");
-		req.concat(*light_intensity / 1000);
+	req.concat(",");
+	req.concat(*light_intensity / 1000);
 	
-	  req.concat(",");
+	req.concat(",");
     req.concat(*pressure / 1000);
 
     req.concat(",");
