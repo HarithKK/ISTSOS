@@ -10,8 +10,8 @@
 #define TIMEOUT 30000UL
 
 // error code
-#define REQUEST_SUCCESS 0
-#define REQUEST_FAILURE 1
+#define REQUEST_SUCCESS 1
+#define REQUEST_FAILURE 0
 #define CONNECTION_PROBLEM 2
 #define NETWORK_FAILURE 3
 #define GPRS_FAILURE 4
@@ -53,7 +53,7 @@ private:
     /**
         Read response from the server
     */
-    bool getResponse();
+    bool getResponse(uint32_t timeout=20000UL);
     /**
         Wake up shield if it's in sleep mode.
     */
@@ -165,7 +165,11 @@ public:
     */
     Sim800(Stream &serial, const char* apn, const char* user, const char* pass, const char* basic="", const char* pin="");
 
-    /**
+    
+	
+	
+	setParams(const char* apn, const char* user, const char* pass);
+	/**
         Initialize SIM enviroment.
         Call it inside setup()
 

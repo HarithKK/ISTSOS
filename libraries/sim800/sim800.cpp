@@ -11,6 +11,12 @@ Sim800::Sim800(Stream &serial, const char* apn, const char* user, const char* pa
     this->basic = basic;
 }
 
+Sim800::setParams(const char* apn, const char* user, const char* pass){
+	this->apn = apn;
+    this->user = user;
+    this->pass = pass;
+}
+
 uint8_t Sim800::begin()
 {
     pinMode(SIM_PIN_STATUS, INPUT);
@@ -228,7 +234,7 @@ bool Sim800::connectToNetwork()
     return true;
 }
 
-uint8_t Sim800::waitResponse(uint32_t timeout, const String expected)
+uint8_t Sim800::waitResponse(uint32_t timeout = 60000UL, const String expected)
 {
 
     unsigned long start = millis();
@@ -263,7 +269,7 @@ uint8_t Sim800::waitResponse(uint32_t timeout, const String expected)
                 goto finish;
             }
         }
-    }while( millis() - start < timeout);
+    }while( (millis() - start) < timeout);
 
   finish:
 
@@ -310,6 +316,7 @@ uint8_t Sim800::executePostPure(const char server[], const char uri[], const Str
 	this->sendCmd(F("AT+HTTPSSL=0\r\n"));
     this->writeCmd(F("AT+HTTPDATA="), String(data.length()), F(",5000\r\n"));
     this->serialAT->flush();
+	
     this->waitResponse(20000UL, "DOWNLOAD");
 
     this->sendCmd(data, 20000UL);
@@ -361,6 +368,7 @@ uint8_t Sim800::executePost(const char server[], const char uri[], const String&
     int tmp = this->connectGprs();
 
     if( tmp != 0){
+		Serial.println(tmp);
         return tmp;
     }
 
@@ -423,7 +431,7 @@ void Sim800::writeCmd(T comm, Args... command)  // , uint32_t timeout, const Str
 
 template<typename T>
 void Sim800::writeCmd(T command)
-{
+{	
     this->serialAT->print(command);
 }
 
@@ -445,7 +453,9 @@ uint32_t* Sim800::ntpUpdate(const char ntpServer[], int GMT){
 
     bool flag = false;
     if (this->serialAT->available()>0){
+		unsigned long start = millis();
         while (this->serialAT->available()>0){
+			
             char c = this->serialAT->read();
             if (c == '"'){
                 flag = true;
@@ -455,6 +465,7 @@ uint32_t* Sim800::ntpUpdate(const char ntpServer[], int GMT){
                 else
                     response += c;
             }
+			
         }
     }
 
@@ -509,13 +520,14 @@ uint32_t* Sim800::ntpUpdate(const char ntpServer[], int GMT){
     return result;
 }
 
-bool Sim800::getResponse(){
+bool Sim800::getResponse(uint32_t timeout){
+	
 
     String response = String("");
     bool exit = false;
 
-    unsigned long timeout = millis();
-    while ((millis() - timeout) < 100000UL && !exit) {
+    unsigned long start = millis();
+    while ((millis() - start) < timeout && !exit) {
         // Print available data
         while (this->serialAT->available()) {
             char c = this->serialAT->read();
@@ -526,7 +538,7 @@ bool Sim800::getResponse(){
             if (c == '}')
                 exit = true;
 
-            timeout = millis();
+            start = millis();
         }
     }
 
@@ -539,9 +551,10 @@ bool Sim800::getResponse(){
         return REQUEST_FAILURE;
     }
 	
-	if (response.indexOf(F("\"success\": true")) < 0){
+	if (response.indexOf(F("\"success\": true")) < 0) {
         return REQUEST_FAILURE;
     }
+	
     return REQUEST_SUCCESS;
 }
 
@@ -555,7 +568,6 @@ int Sim800::readRSSI(){
 	
 	this->writeCmd(F("AT+CSQ\r\n"));
     String h = this->getResponseText();
-	
 	if(h.indexOf("+CSQ")>0){
 		int y= h.indexOf("+CSQ:");
 		h = h.substring(y+6,y+8);
