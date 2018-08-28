@@ -4,7 +4,7 @@
 #include <Arduino.h>
 #include <Wire.h>
 
-#define BME280_ADDRESS   0x76
+#define BME280_ADDRESS   0x77
 
 #define BME280_REG_DIG_T1    0x88
 #define BME280_REG_DIG_T2    0x8A

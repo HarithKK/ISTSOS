@@ -16,13 +16,13 @@
 
 #define SERVER "slpiot.org"
 #define REQ_STR "/api/insertData/"
-#define GUID_SLPIOT "e13ed2f7-c046-47"
+#define GUID_SLPIOT "f7bd3853-3e40-de"
 
 // For ISTSOS Settings
 
 #define IST_SERVER "geoservice.ist.supsi.ch"
 #define POSTREQ "/4onse/wa/istsos/services/lka/operations/fastinsert"
-#define PROCEDURE "3a50ffaa213311e8a93608002745029a"
+#define PROCEDURE "7cdd13ce8c2511e8a93608002745029a"
 
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -44,9 +44,9 @@
 #define TEMP_DOWN 34          // lower temperature or fan
 #define FAN_PIN 10            // fan pin
 #define TIME_RATE 10           // set as sending after every Time (minutes)
-#define ERROR_REPEATE_COUNT 1 // how much times shoulw try to send
+#define ERROR_REPEATE_COUNT 2 // how much times shoulw try to send
 #define LOG_SEND_ERROR_COUNT 3
-#define NTP_UPDATE 604800UL   // NTP update 7 days
+#define NTP_UPDATE 259200UL   // NTP update and reset 3 days
 
 #define WIN_SPEED_PIN A1       // wind speed pin
 #define WIND_FACTOR 32.2   // 1024 --> 32.2ms-1   
@@ -69,7 +69,7 @@
 #define GPRS_FAILURE 4
 
 // LCD
-#define LCD_ADDRESS 0x27
+#define LCD_ADDRESS 0x27 // 27 or 3F
 
 //*****************************************************************************
 
@@ -91,7 +91,7 @@
 #define ALTITUDE_ENABLE 1
 #define LUX_ENABLE 0
 #define WS_ENABLE 1
-#define WD_ENABLE 1
+#define WD_ENABLE 0
 #define RG_ENABLE 0
 #define BT_ENABLE 1
 

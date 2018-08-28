@@ -100,9 +100,11 @@ void loop() {
     DateTime tsp = ntpUpdate();
     if(tsp.year()>=2018){
         setNTPTime();
+        resetProgram();
     }
     last_ntp_update = getUnixTime();
   }
+
   
   if(get_freeRam()<1000){
     printSystemLog(F("Reset Program"),F("Ram Refresh"));
@@ -429,7 +431,7 @@ double readWindSpeed(){
   if(sensor_voltage <0.1)
     return 0;
   else{
-    return (sensor_voltage /4.5)*32.4;  // convert it to leaniar relationship
+    return (sensor_voltage /4.5)*32.4 ;  // convert it to leaniar relationship
   }
   
 }
@@ -527,6 +529,7 @@ void initialize(){
     clearSensorVariables();   // initialize all sensor variables 
     printSystemLog(F(SUCCESSFULL),F("SYSTEM INIT"),INIT_DONE);   
 
+    last_ntp_update = getUnixTime(); 
     
     delay(2000);
     
