@@ -174,6 +174,7 @@ void printLCD(char *f){
 
 void clearLCD(){
   lcd.clear();  
+
 }
 
 

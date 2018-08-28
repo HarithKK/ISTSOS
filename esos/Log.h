@@ -45,6 +45,7 @@ void initLCD();
 void printLCDString(String f,uint8_t i,uint8_t j);
 void printLCD(char *f);
 void showStrength(uint8_t x);
+
 void clearLCD();
 
 // printers

@@ -192,6 +192,7 @@ void readSensorValues(){
     clearLCD();
     // Watch Dog ON
     Watchdog.enable(WATCHDOG_TIME_OUT);
+
     // read External temperature
     if(EXT_TEMP_ENABLE){
       ext_temperature += readExternalTemperature();
