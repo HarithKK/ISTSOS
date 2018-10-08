@@ -43,7 +43,7 @@
 #define TEMP_UP 37            // upeer temp for the fan
 #define TEMP_DOWN 34          // lower temperature or fan
 #define FAN_PIN 10            // fan pin
-#define TIME_RATE 10           // set as sending after every Time (minutes)
+#define TIME_RATE 9           // set as sending after every Time (minutes)
 #define ERROR_REPEATE_COUNT 2 // how much times shoulw try to send
 #define LOG_SEND_ERROR_COUNT 3
 #define NTP_UPDATE 259200UL   // NTP update and reset 3 days
