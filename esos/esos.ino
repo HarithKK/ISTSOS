@@ -52,6 +52,7 @@ double pressure_value=0;     // pressure value;
 double altitude_value=0;    // altitude value
 double lux_value=0;         // inetensity value
 double wind_direction=0;    // win direction value
+double water_level =0;
 // wind speed 
 double wind_speed=0;        // wind speed value
 float sensor_voltage=0;
@@ -65,6 +66,11 @@ int loopCount=0;
 void setup() {
   Serial.begin(9600);   // serial monitor for showing 
   while (!Serial){}     // wait for Serial Monitor On
+  
+  if(WL_ENABLE){
+    Serial1.begin(9600);   // Water Level Sensor
+    while (!Serial1){}     
+  }
   Serial2.begin(9600);  // serial  for GPRS 
   while (!Serial1){}    // wait for GPRS Monitor
   
@@ -145,6 +151,7 @@ void saveAndSendData(){
             &soilemoisture_value,
             &altitude_value,
             &battery_value,
+            &water_level,
             SLPIOT_REQUEST,
             getLocalTime(),
             GUID_CODE);
@@ -162,6 +169,7 @@ void saveAndSendData(){
             &soilemoisture_value,
             &altitude_value,
             &battery_value,
+            &water_level,
             ISTSOS_REQUEST,
             getGrinichTime(),
             PROCEDURE);
@@ -183,6 +191,7 @@ void getAvarageSensorValues(){
   altitude_value /= loopCount;
   lux_value /= loopCount;
   rain_gauge /= loopCount;
+  water_level /= loopCount;
   battery_value /= loopCount;
 }
 
@@ -270,6 +279,13 @@ void readSensorValues(){
     }
     Watchdog.reset();
 
+    // water_level
+    if(WL_ENABLE){
+      water_level += readWaterLevel();
+      printValuesOnPanel(F("WL"),water_level,"m");
+    }
+    Watchdog.reset();
+
     // get battery voltage
     if(BT_ENABLE){
       battery_value = readBatteryVoltage();
@@ -301,6 +317,7 @@ void clearSensorVariables(){
   sensor_voltage=0;
   rain_gauge=0;
   rain_count=0;
+  water_level=0;
 
   loopCount=0;
 }
@@ -440,6 +457,11 @@ double readWindSpeed(){
 // read rain guarge
 double readRainGuarge(){
   return rain_count * RAIN_FACTOR;
+}
+
+// read water level
+double readWaterLevel(){
+  return 0;
 }
 
 void rainGageClick()

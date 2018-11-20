@@ -93,8 +93,8 @@
 #define WS_ENABLE 1
 #define WD_ENABLE 0
 #define RG_ENABLE 0
+#define WL_ENABLE 1
 #define BT_ENABLE 1
-
 
 
 #endif

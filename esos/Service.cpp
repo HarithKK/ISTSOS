@@ -36,6 +36,7 @@ void sendRequestString(double *externalHum,
 											 double *soilMoisture,
 											 double *altitude,
 											 double *battry,
+                       double *waterlevel,
 											 int type,
 											 String TimeStamp,
 											 String Guid)
@@ -75,33 +76,38 @@ void sendRequestString(double *externalHum,
 	req.concat(";");
 	req += TimeStamp;
 
-    req.concat(",");
-    req.concat(*internalTemp);
-
-    req.concat(",");
-    req.concat(*soilMoisture);
-
-	req.concat(",");
-	req.concat(*light_intensity / 1000);
-	
-	req.concat(",");
-    req.concat(*pressure / 1000);
-
-    req.concat(",");
-    req.concat(*externalHum);
-  
-    req.concat(",");
-    req.concat(*externalTemp);
-  
-    req.concat(",");
-    req.concat(*rainFall);
- 
-    req.concat(",");
-    req.concat(*windDirection);
-  
-    req.concat(",");
-    req.concat(*windSpeed);
     
+      req.concat(",");
+      req.concat(*internalTemp);
+
+      req.concat(",");
+      req.concat(*soilMoisture);
+
+      req.concat(",");
+      req.concat(*light_intensity / 1000);
+    
+      req.concat(",");
+      req.concat(*pressure / 1000);
+
+      req.concat(",");
+      req.concat(*externalHum);
+    
+      req.concat(",");
+      req.concat(*externalTemp);
+    
+      req.concat(",");
+      req.concat(*rainFall);
+  
+      req.concat(",");
+      req.concat(*windDirection);
+    
+      req.concat(",");
+      req.concat(*windSpeed);
+    
+      if(WL_ENABLE){
+        req.concat(",");
+        req.concat(*waterlevel);
+      }
 
     if(sendRequstMessage(istserver,isturi,req,true)== SEND_SUCCESS){
       writeFileSD(F("DT_LOG/ISTSOS/"),getFileNameDate(),req);
@@ -172,6 +178,11 @@ void sendRequestString(double *externalHum,
 		req.concat("\"AT\":\"");
 		req.concat(*altitude);
 		req.concat("\",");
+    if(WL_ENABLE){
+      req.concat("\"WL\":\"");
+		  req.concat(*waterlevel);
+	  	req.concat("\",");
+    }
 		req.concat("\"BV\":\"");
 		req.concat(*battry);
 		req.concat("\"}");
