@@ -21,6 +21,7 @@ void sendRequestString(double* externalHum,
     double *soilMoisture,
     double *altitude,
     double *battry,
+    double *waterlevel,
     int type,
     String TimeStamp,
     String Guid);
