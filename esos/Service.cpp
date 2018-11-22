@@ -35,6 +35,7 @@ void sendRequestString(double *externalHum,
                        double *pressure,
                        double *soilMoisture,
                        double *altitude,
+                       double *waterLevel,
                        double *battry,
                        int type,
                        String TimeStamp,
@@ -70,37 +71,41 @@ void sendRequestString(double *externalHum,
 
 #endif
 
-
     req = String(Guid);
     req.concat(";");
     req += TimeStamp;
 
-    req.concat(",");
-    req.concat(*internalTemp);
-
-    req.concat(",");
-    req.concat(*soilMoisture);
-
-    req.concat(",");
-    req.concat(*light_intensity / 1000);
-
-    req.concat(",");
-    req.concat(*pressure / 1000);
-
-    req.concat(",");
-    req.concat(*externalHum);
-
-    req.concat(",");
-    req.concat(*externalTemp);
-
-    req.concat(",");
-    req.concat(*rainFall);
-
-    req.concat(",");
-    req.concat(*windDirection);
-
-    req.concat(",");
-    req.concat(*windSpeed);
+    if(WL_ENABLE){
+      req.concat(",");
+      req.concat(*waterLevel);
+    }else{
+      req.concat(",");
+      req.concat(*internalTemp);
+  
+      req.concat(",");
+      req.concat(*soilMoisture);
+  
+      req.concat(",");
+      req.concat(*light_intensity / 1000);
+  
+      req.concat(",");
+      req.concat(*pressure / 1000);
+  
+      req.concat(",");
+      req.concat(*externalHum);
+  
+      req.concat(",");
+      req.concat(*externalTemp);
+  
+      req.concat(",");
+      req.concat(*rainFall);
+  
+      req.concat(",");
+      req.concat(*windDirection);
+  
+      req.concat(",");
+      req.concat(*windSpeed);  
+    }
 
 
     if (sendRequstMessage(istserver, isturi, req, true) == SEND_SUCCESS) {
@@ -171,6 +176,9 @@ void sendRequestString(double *externalHum,
     req.concat("\",");
     req.concat("\"AT\":\"");
     req.concat(*altitude);
+    req.concat("\",");
+    req.concat("\"WL\":\"");
+    req.concat(*waterLevel);
     req.concat("\",");
     req.concat("\"BV\":\"");
     req.concat(*battry);

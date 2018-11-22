@@ -16,13 +16,13 @@
 
 #define SERVER "slpiot.org"
 #define REQ_STR "/api/insertData/"
-#define GUID_SLPIOT "2851e9a0-b608-46"
+#define GUID_SLPIOT "5bf82c59-7ec0-4f"
 
 // For ISTSOS Settings
 
 #define IST_SERVER "geoservice.ist.supsi.ch"
 #define POSTREQ "/4onse/wa/istsos/services/lka/operations/fastinsert"
-#define PROCEDURE "72e8e1cc872011e8a93608002745029a"
+#define PROCEDURE "f572d244ee6111e8887c08002745029a"
 
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -84,19 +84,19 @@
 //#define SAVE_LOG_AND_SEND
 
 // Sensor Enabling
-#define EXT_TEMP_ENABLE 1
-#define INT_TEMP_ENABLE 1
-#define EXT_HUM_ENABLE 1
+#define EXT_TEMP_ENABLE 0
+#define INT_TEMP_ENABLE 0
+#define EXT_HUM_ENABLE 0
 #define INT_HUM_ENABLE 0
 #define SM_ENABLE 0
-#define PRESSURE_ENABLE 1
+#define PRESSURE_ENABLE 0
 #define ALTITUDE_ENABLE 0
 #define LUX_ENABLE 0
 #define WS_ENABLE 0
 #define WD_ENABLE 0
 #define RG_ENABLE 0
-#define BT_ENABLE 1
-
+#define BT_ENABLE 0
+#define WL_ENABLE 1
 
 
 #endif

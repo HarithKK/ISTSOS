@@ -55,6 +55,7 @@ double soilemoisture_value = 0; // soile mosture
 double pressure_value = 0;   // pressure value;
 double altitude_value = 0;  // altitude value
 double lux_value = 0;       // inetensity value
+double water_level =0;
 double wind_direction = 0;  // win direction value
 // wind speed
 double wind_speed = 0;      // wind speed value
@@ -69,13 +70,16 @@ int loopCount = 0;
 void setup() {
   Serial.begin(9600);   // serial monitor for showing
   while (!Serial) {}    // wait for Serial Monitor On
+  Serial1.begin(9600);  // serial  for WL
+  while (!Serial1) {}   // wait for WL
   Serial2.begin(9600);  // serial  for GPRS
-  while (!Serial1) {}   // wait for GPRS Monitor
+  while (!Serial2) {}   // wait for GPRS Monitor
 
   //Run Unit tests
 #ifdef UNIT_CPP
   unitRun();
 #endif
+
   initialize();
 
   currentDateTime = getCurruntRTCDate();// 20/10/2018
@@ -153,6 +157,7 @@ void sendSlpiotRequest(String time) {
                            &pressure_value,
                            &soilemoisture_value,
                            &altitude_value,
+                           &water_level,
                            &battery_value,
                            SLPIOT_REQUEST,
                            time,
@@ -170,6 +175,7 @@ void sendIstsosRequest(String time) {
                            &pressure_value,
                            &soilemoisture_value,
                            &altitude_value,
+                           &water_level,
                            &battery_value,
                            ISTSOS_REQUEST,
                            time,
@@ -281,6 +287,13 @@ void readSensorValues() {
   }
   Watchdog.reset();
 
+  // rain guarge
+  if (WL_ENABLE) {
+    water_level = readWaterLevel();
+    printValuesOnPanel(sensorReadingTime, F("WL"), water_level , "m");
+  }
+  Watchdog.reset();
+
   // get battery voltage
   if (BT_ENABLE) {
     battery_value += readBatteryVoltage();
@@ -312,6 +325,7 @@ void clearSensorVariables() {
   sensor_voltage = 0;
   rain_gauge = 0;
   rain_count = 0;
+  water_level =0;
   battery_value = 0;
 
   loopCount = 0;
@@ -403,6 +417,46 @@ double readPressure() {
   return bme280.getPressure() * 0.001; // kpa
 }
 
+// read water level 
+// result type = R<v1><v2><v3><v4>\n
+double readWaterLevel(){
+  char value[4];
+  char i=0;
+  bool res_starts=false;
+  long last = millis();
+  double result=0;
+  Serial1.flush();
+  while(1){
+    if(Serial1.available()){
+      char c = Serial1.read();
+      if(res_starts){
+        if(i==4)    // if 4 chars counted , break
+          break;
+        
+        value[i++] = c;  // count and read behind 4 chars
+        if(c=='R'){      // Error : if 4 chars contain R , process start again 
+          i=0;  
+        }
+      }
+      if(c == 'R'){ // if first charactor R, Counter starts
+        res_starts = true;
+        continue;
+      }
+    }
+    if ((millis() - last) > 10000UL){ // if read process over 10000ms ,  continue with 0 (If Error on line)
+      for(i=0;i<4;i++)
+        value[i]='0';
+      break;  
+    }
+  }
+
+  // convert to double
+  for(i=0;i<4;i++){
+    result += (value[3-i]-48) * pow(10,i); 
+  }
+  return result /= 1000;  // result as meter value (max 9.999 m)
+}
+
 // read lux value
 double readItensity() {
 //  if (!isSI11450Working()) {
@@ -481,12 +535,17 @@ void initialize() {
   delay(300);
 
   // GPRS
-  ServiceBegin();
-  delay(1000);
+  #if defined(ISTSOS) || defined(SLPIOT)
+    ServiceBegin();
+    delay(1000);
+  
+  #endif 
 
-  if (rtc.lostPower()) {
-    setNTPTime();
-  }
+  #ifdef NTP
+    if (rtc.lostPower()) {
+      setNTPTime();
+    }
+  #endif
 
   // Dullas temperature
   if (EXT_TEMP_ENABLE) {
