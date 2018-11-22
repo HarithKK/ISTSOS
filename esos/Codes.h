@@ -4,7 +4,7 @@
 // SD
 #define SD_INIT_DONE 0
 #define SD_INIT_ERROR 12
-#define SD_FILE_CREATION_ERROR 22 
+#define SD_FILE_CREATION_ERROR 22
 #define SD_FILE_OPEN_ERROR 23
 
 // RTC
@@ -30,7 +30,7 @@
 #define DATA_SEND_SUCCESSFULLY 2
 #define DATA_SEND_ERROR 21
 
-// Light 
+// Light
 #define LIGHT_I2C_ERROR 15
 
 // DS18B20
