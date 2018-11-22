@@ -3,41 +3,41 @@
 LiquidCrystal_I2C lcd(LCD_ADDRESS, LCD_COLS, LCD_ROWS);
 // saving log file
 File filef;
-int SDOK=0;
+int SDOK = 0;
 const PROGMEM int chipSelect = 53;  // chip select pin for the SD module.it should be connected to 53 of module
 
 /*
     SD card Functions
 */
 
-void initSD(){
-    Watchdog.enable(WATCHDOG_TIME_OUT);
-    printString(F("INITIALIZING"),F("MEMORY"));
-    if(SDOK==0){
-        if (SD.begin(chipSelect)) 
-            printString(F(SUCCESSFULL),F("MEMORY"),SD_INIT_DONE); 
-        else
-            printString(F(SUCCESS_ERROR),F("MEMORY"),SD_INIT_ERROR);
-        SDOK=1;
-    }
-    
-    // create Folders
-    SD.mkdir(F("MEM_LOG"));
-    delay(100);
-    SD.mkdir(F("DT_LOG"));
-    delay(100);
-    SD.mkdir(F("SYS_LOG"));
-    delay(100);
-    
-    SD.mkdir(F("MEM_LOG/SLPIOT"));
-    delay(100);
-    SD.mkdir(F("MEM_LOG/ISTSOS"));
-    delay(100);
-    SD.mkdir(F("DT_LOG/SLPIOT"));
-    delay(100);
-    SD.mkdir(F("DT_LOG/ISTSOS"));
-    delay(100);
-    Watchdog.disable();
+void initSD() {
+  Watchdog.enable(WATCHDOG_TIME_OUT);
+  printString(F("INITIALIZING"), F("MEMORY"));
+  if (SDOK == 0) {
+    if (SD.begin(chipSelect))
+      printString(F(SUCCESSFULL), F("MEMORY"), SD_INIT_DONE);
+    else
+      printString(F(SUCCESS_ERROR), F("MEMORY"), SD_INIT_ERROR);
+    SDOK = 1;
+  }
+
+  // create Folders
+  SD.mkdir(F("MEM_LOG"));
+  delay(100);
+  SD.mkdir(F("DT_LOG"));
+  delay(100);
+  SD.mkdir(F("SYS_LOG"));
+  delay(100);
+
+  SD.mkdir(F("MEM_LOG/SLPIOT"));
+  delay(100);
+  SD.mkdir(F("MEM_LOG/ISTSOS"));
+  delay(100);
+  SD.mkdir(F("DT_LOG/SLPIOT"));
+  delay(100);
+  SD.mkdir(F("DT_LOG/ISTSOS"));
+  delay(100);
+  Watchdog.disable();
 }
 
 
@@ -47,85 +47,85 @@ String strRead = String("");
 
 
 /*
- * Basics
- */
+   Basics
+*/
 
-uint8_t removeFile(String folderpath,String fileName){
+uint8_t removeFile(String folderpath, String fileName) {
   Watchdog.enable(WATCHDOG_TIME_OUT);
   fileName = folderpath + fileName;
   long last = millis();
-  while((millis()-last)<10000UL){
-    if(SD.remove(fileName))
+  while ((millis() - last) < 10000UL) {
+    if (SD.remove(fileName))
       return 1;
   }
   Watchdog.disable();
   return 0;
 }
 
-String readFileSD (String folderpath,String filename){
+String readFileSD (String folderpath, String filename) {
   Watchdog.enable(WATCHDOG_TIME_OUT);
-  filename = folderpath +filename;
-  file = SD.open(filename,FILE_READ);
-  if(!file)
+  filename = folderpath + filename;
+  file = SD.open(filename, FILE_READ);
+  if (!file)
     return "No File";
-  while(file.available()){
-     strRead.concat((char)file.read());    
+  while (file.available()) {
+    strRead.concat((char)file.read());
   }
   file.close();
   Watchdog.disable();
-  return strRead; 
+  return strRead;
 }
 
 //Write the message on the Log
-void writeFileSD(String folderpath,String fileName,String message)
+void writeFileSD(String folderpath, String fileName, String message)
 {
-    Watchdog.enable(WATCHDOG_TIME_OUT);
-    fileName = folderpath + fileName;
-    filef = SD.open(fileName, FILE_WRITE);
-    delay(100);
-    if (filef) 
-    {
-        filef.println(message);
-        filef.close();
-    } 
-    else 
-    {
-        Serial.println("SD_FILE_OPEN_ERROR :" + fileName);
-    }
-    Watchdog.disable();
+  Watchdog.enable(WATCHDOG_TIME_OUT);
+  fileName = folderpath + fileName;
+  filef = SD.open(fileName, FILE_WRITE);
+  delay(100);
+  if (filef)
+  {
+    filef.println(message);
+    filef.close();
+  }
+  else
+  {
+    Serial.println("SD_FILE_OPEN_ERROR :" + fileName);
+  }
+  Watchdog.disable();
 }
 
 String str;
-void printString(String topLayer,String bottomLayer,char DefinitionCode){
-    str = getLocalTimeHHMM()+" : "+ topLayer + " " + bottomLayer + " : Ram Condition:" + get_freeRam();
-    Serial.println(str);
-    lcd.clear();
-    printLCDString(topLayer,0,0);
-    printLCDString(bottomLayer,0,1);
-    delay(1000);
-    soundIndicator(DefinitionCode/10,DefinitionCode%10);
+void printString(String topLayer, String bottomLayer, char DefinitionCode) {
+  str = getLocalTimeHHMM() + " : " + topLayer + " " + bottomLayer + " : Ram Condition:" + get_freeRam();
+  Serial.println(str);
+  lcd.clear();
+  printLCDString(topLayer, 0, 0);
+  printLCDString(bottomLayer, 0, 1);
+  delay(1000);
+  soundIndicator(DefinitionCode / 10, DefinitionCode % 10);
 }
 
-void printSystemLog(String topLayer,String bottomLayer,char DefinitionCode ){
-    str = getLocalTimeHHMM()+" : "+ topLayer + " " + bottomLayer + " : Ram Condition:" + get_freeRam();
-    Serial.println(str);
-    lcd.clear();
-    printLCDString(topLayer,0,0);
-    printLCDString(bottomLayer,0,1);
-    writeFileSD("SYS_LOG/",getFileNameDate(),str);
-    delay(1000);
-    soundIndicator(DefinitionCode/10,DefinitionCode%10);
+void printSystemLog(String topLayer, String bottomLayer, char DefinitionCode ) {
+  str = getLocalTimeHHMM() + " : " + topLayer + " " + bottomLayer + " : Ram Condition:" + get_freeRam();
+  Serial.println(str);
+  lcd.clear();
+  printLCDString(topLayer, 0, 0);
+  printLCDString(bottomLayer, 0, 1);
+  writeFileSD("SYS_LOG/", getFileNameDate(), str);
+  delay(1000);
+  soundIndicator(DefinitionCode / 10, DefinitionCode % 10);
 }
 
-void printValuesOnPanel(String name_index,double value,String unit){
-    lcd.clear();
-    String topLayer = name_index+" "+ String(value).substring(0,5) +" "+unit;
-    printLCDString(topLayer,0,0);
-    showStrength(readRSSI());
-    printLCDString(getLocalTimeHHMM().substring(2),0,1);
-    str = getLocalTimeHHMM()+" : "+ name_index + " " + String(value) + " : Ram Condition:" + get_freeRam();
-    Serial.println(str);
-    delay(1000);
+void printValuesOnPanel(String readingSensorTime, String name_index, double value, String unit) {
+  lcd.clear();
+  String topLayer = name_index + " " + String(value).substring(0, 5) + " " + unit;
+  printLCDString(topLayer, 0, 0);
+  showStrength(readRSSI());
+  printLCDString(readingSensorTime.substring(2), 0, 1);
+  str = readingSensorTime + " : " + name_index + " " + String(value) + " : Ram Condition:" + get_freeRam();
+  Serial.println(str);
+  delay(1000);
 }
 
 /*
@@ -148,91 +148,90 @@ const uint8_t signal_4[8]  = {0x1f, 0x1f, 0x1f, 0x1f, 0x1f, 0x1f, 0x1f};
 //    uint8_t node_low[8]  = {0x0, 0x0, 0x0, 0x0, 0x1C, 0x1C, 0x1C};
 //    uint8_t node_upper[8]  = {0x1C, 0x1C, 0x1C,0x0, 0x0, 0x0, 0x0};
 
-void initLCD(){
+void initLCD() {
 
-    lcd.begin();
-    lcd.backlight();
+  lcd.begin();
+  lcd.backlight();
 
-    lcd.createChar(0, signal_0);
-    lcd.createChar(1, signal_1);
-    lcd.createChar(2, signal_2);
-    lcd.createChar(3, signal_3);
-    lcd.createChar(4, signal_4);
-    
-    lcd.home();
-}
-  
-void printLCDString(String f,uint8_t i,uint8_t j){
-    lcd.setCursor(i,j);
-    lcd.print(f);
-}
-  
-void printLCD(char *f){
-    lcd.clear();
-    lcd.print(f);
+  lcd.createChar(0, signal_0);
+  lcd.createChar(1, signal_1);
+  lcd.createChar(2, signal_2);
+  lcd.createChar(3, signal_3);
+  lcd.createChar(4, signal_4);
+
+  lcd.home();
 }
 
-void clearLCD(){
-  lcd.clear();  
+void printLCDString(String f, uint8_t i, uint8_t j) {
+  lcd.setCursor(i, j);
+  lcd.print(f);
+}
 
+void printLCD(char *f) {
+  lcd.clear();
+  lcd.print(f);
+}
+
+void clearLCD() {
+  lcd.clear();
 }
 
 
 // sound soundIndicator
-void soundIndicator(uint8_t count1,uint8_t count2){
+void soundIndicator(uint8_t count1, uint8_t count2) {
 
-    //long turn
-    while(count1>0){
-        tone(BUZZER,1000);
-        delay(200);
-        noTone(BUZZER);
-        delay(100);
-        count1--;
-    }
-    //long turn
-    while(count2>0){
-        tone(BUZZER,1000);
-        delay(100);
-        noTone(BUZZER);
-        delay(100);
-        count2--;
-    }
-    delay(1000);
+  //long turn
+  while (count1 > 0) {
+    tone(BUZZER, 1000);
+    delay(200);
+    noTone(BUZZER);
+    delay(100);
+    count1--;
   }
+  //long turn
+  while (count2 > 0) {
+    tone(BUZZER, 1000);
+    delay(100);
+    noTone(BUZZER);
+    delay(100);
+    count2--;
+  }
+  delay(1000);
+}
 
 
-void showStrength(uint8_t x){
-  lcd.setCursor(12,0);
-    lcd.write(0);
-    lcd.write(0);
-    lcd.write(0);
-    lcd.write(0);
-  lcd.setCursor(12,0);
-  if(x< 10 && x>= 2)
+void showStrength(uint8_t x) {
+  lcd.setCursor(12, 0);
+  lcd.write(0);
+  lcd.write(0);
+  lcd.write(0);
+  lcd.write(0);
+  lcd.setCursor(12, 0);
+  if (x < 10 && x >= 2)
     lcd.write(1);
-  else if(x< 15 && x>= 10){
+  else if (x < 15 && x >= 10) {
     lcd.write(1);
     lcd.write(2);
   }
-  else if(x< 20 && x>= 15){
+  else if (x < 20 && x >= 15) {
     lcd.write(1);
     lcd.write(2);
     lcd.write(3);
   }
-  else if( x>= 20){
+  else if ( x >= 20) {
     lcd.write(1);
     lcd.write(2);
     lcd.write(3);
     lcd.write(4);
-  }else
+  } else
     lcd.write(0);
 }
 
-void printFreeRam(){
-  #ifdef PRINT_RAM
+void printFreeRam() {
+#ifdef PRINT_RAM
   Serial.print(F("Free Ram : "));
   Serial.println(get_freeRam());
-  #endif  
+#endif
 }
 int get_freeRam()
 {
@@ -241,7 +240,7 @@ int get_freeRam()
 }
 //
 //void showBattryLowMark(){
-//  
+//
 //
 //    lcd.createChar(5, up_dev_left_upper_corner);
 //    lcd.createChar(6, up_dev_left_lower_corner);
@@ -252,7 +251,7 @@ int get_freeRam()
 //    lcd.createChar(11, node_low);
 //    lcd.createChar(12, node_upper);
 //    lcd.createChar(13, up_dev_left_lower_corner_1);
-//    
+//
 //  lcd.clear();
 //  lcd.setCursor(2,0);
 //  lcd.write(5);
@@ -279,7 +278,7 @@ int get_freeRam()
 //    lcd.createChar(3, signal_3);
 //    lcd.createChar(4, signal_4);
 //
-//  
+//
 //}
 
 // log requests in temporary

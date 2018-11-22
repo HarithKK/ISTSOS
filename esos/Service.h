@@ -11,23 +11,23 @@ extern Sim800 server ;
 
 void ServiceBegin();
 void sendRequestString(double* externalHum,
-    double *externalTemp,
-    double *internalTemp,
-    double *light_intensity,
-    double *windSpeed,
-    double *windDirection,
-    double *rainFall,
-    double *pressure,
-    double *soilMoisture,
-    double *altitude,
-    double *battry,
-    double *waterlevel,
-    int type,
-    String TimeStamp,
-    String Guid);
+                       double *externalTemp,
+                       double *internalTemp,
+                       double *light_intensity,
+                       double *windSpeed,
+                       double *windDirection,
+                       double *rainFall,
+                       double *pressure,
+                       double *soilMoisture,
+                       double *altitude,
+                       double *waterLevel,
+                       double *battry,
+                       int type,
+                       String TimeStamp,
+                       String Guid);
 
 int readRSSI();
-uint8_t sendRequstMessage(char server_url[],char url[],String message,bool auth);
+uint8_t sendRequstMessage(char server_url[], char url[], String message, bool auth);
 DateTime ntpUpdate();
 
 #endif

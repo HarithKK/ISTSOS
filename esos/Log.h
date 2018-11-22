@@ -33,30 +33,29 @@ int get_freeRam();
 void printFreeRam();
 
 //basic
-void writeFileSD(String filderpath,String fileName,String message);
-uint8_t removeFile(String folderpath,String fileName);
-String readFileSD(String folderpath,String fileName);
+void writeFileSD(String filderpath, String fileName, String message);
+uint8_t removeFile(String folderpath, String fileName);
+String readFileSD(String folderpath, String fileName);
 
 void writeErrorLogData(String &text);
 // LCD functions
 extern LiquidCrystal_I2C lcd;
 
 void initLCD();
-void printLCDString(String f,uint8_t i,uint8_t j);
+void printLCDString(String f, uint8_t i, uint8_t j);
 void printLCD(char *f);
 void showStrength(uint8_t x);
-
 void clearLCD();
 
 // printers
-void printString(String topLayer,String bottomLayer,char DefinitionCode=0);
-void printSystemLog(String topLayer,String bottomLayer,char DefinitionCode =0);
-void printValuesOnPanel(String name_index,double value,String unit);
+void printString(String topLayer, String bottomLayer, char DefinitionCode = 0);
+void printSystemLog(String topLayer, String bottomLayer, char DefinitionCode = 0);
+void printValuesOnPanel(String readingSensorTime, String name_index, double value, String unit);
 void showBattryLowMark();
 
 
 
 // sound indicate
-void soundIndicator(uint8_t count1,uint8_t count2);
+void soundIndicator(uint8_t count1, uint8_t count2);
 
 #endif

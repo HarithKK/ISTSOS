@@ -2,12 +2,12 @@
 #define SETTINGS_H
 
 /*
-	GPRS Settings 
+	GPRS Settings
 */
 
-// For Communication 
+// For Communication
 
-#define APN "mobitel"
+#define APN "mobitel"     // mobitel  or dialog
 #define USERNAME ""
 #define PASSWORD ""
 #define BASIC_AUTH "YWRtaW46QlYzWGp2clA="
@@ -16,13 +16,13 @@
 
 #define SERVER "slpiot.org"
 #define REQ_STR "/api/insertData/"
-#define GUID_SLPIOT "f7bd3853-3e40-de"
+#define GUID_SLPIOT "5bf82c59-7ec0-4f"
 
 // For ISTSOS Settings
 
 #define IST_SERVER "geoservice.ist.supsi.ch"
 #define POSTREQ "/4onse/wa/istsos/services/lka/operations/fastinsert"
-#define PROCEDURE "7cdd13ce8c2511e8a93608002745029a"
+#define PROCEDURE "f572d244ee6111e8887c08002745029a"
 
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -39,14 +39,14 @@
 // rain gauge
 #define RAIN_GAUGE_PIN 2
 #define RAIN_GAUGE_INT 0
-#define RAIN_FACTOR 0.5       // rain factor for one tip bucket
+#define RAIN_FACTOR 0.2       // rain factor for one tip bucket
 #define TEMP_UP 37            // upeer temp for the fan
 #define TEMP_DOWN 34          // lower temperature or fan
 #define FAN_PIN 10            // fan pin
-#define TIME_RATE 9           // set as sending after every Time (minutes)
+#define TIME_RATE 10           // set as sending after every Time (minutes)
 #define ERROR_REPEATE_COUNT 2 // how much times shoulw try to send
 #define LOG_SEND_ERROR_COUNT 3
-#define NTP_UPDATE 259200UL   // NTP update and reset 3 days
+#define NTP_UPDATE 604800UL   // NTP update 7 days
 
 #define WIN_SPEED_PIN A1       // wind speed pin
 #define WIND_FACTOR 32.2   // 1024 --> 32.2ms-1   
@@ -59,7 +59,7 @@
 #define RF_TIMEOUT 5000
 #define WATCHDOG_TIME_OUT 8000
 
-// message
+// messages
 #define SUCCESSFULL "SUCCESSFULL"
 #define SUCCESS_ERROR "ERROR"
 
@@ -69,32 +69,34 @@
 #define GPRS_FAILURE 4
 
 // LCD
-#define LCD_ADDRESS 0x27 // 27 or 3F
+#define LCD_ADDRESS 0x27// 0x27 or 0x3F
+
+// RE 3F GR 27
 
 //*****************************************************************************
 
-// for Enable Servers
+// Enabling Servers
 
-#define ISTSOS 
-#define SLPIOT 
+#define ISTSOS
+#define SLPIOT
 #define NTP
 
 //#define SAVE_LOG_AND_SEND
 
 // Sensor Enabling
-#define EXT_TEMP_ENABLE 1
-#define INT_TEMP_ENABLE 1
-#define EXT_HUM_ENABLE 1
-#define INT_HUM_ENABLE 1
+#define EXT_TEMP_ENABLE 0
+#define INT_TEMP_ENABLE 0
+#define EXT_HUM_ENABLE 0
+#define INT_HUM_ENABLE 0
 #define SM_ENABLE 0
-#define PRESSURE_ENABLE 1
-#define ALTITUDE_ENABLE 1
+#define PRESSURE_ENABLE 0
+#define ALTITUDE_ENABLE 0
 #define LUX_ENABLE 0
-#define WS_ENABLE 1
+#define WS_ENABLE 0
 #define WD_ENABLE 0
 #define RG_ENABLE 0
+#define BT_ENABLE 0
 #define WL_ENABLE 1
-#define BT_ENABLE 1
 
 
 #endif
