@@ -197,7 +197,6 @@ void getAvarageSensorValues() {
   pressure_value *= 1000;
   altitude_value /= loopCount;
   lux_value /= loopCount;
-  //rain_gauge /= loopCount; // changed on 2018-09-29
   battery_value /= loopCount;
 }
 

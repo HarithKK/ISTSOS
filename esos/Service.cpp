@@ -12,17 +12,14 @@ uint8_t temp = 0;
 File dir;
 File reader;
 
-uint8_t log_send_error_count = LOG_SEND_ERROR_COUNT;
-
 void ServiceBegin()
 {
-
-  printString("SERVICE CHECK", APN);
+  printString(SERVICE_CHECK, APN);
   uint8_t temp = simServer.begin();
   if (temp)
-    printSystemLog(SUCCESSFULL, "SIM 800", SERVICE_OK);
+    printSystemLog(SUCCESSFULL, SIM_800, SERVICE_OK);
   else
-    printSystemLog(SUCCESS_ERROR, "SIM 800", SERVICE_ERROR);
+    printSystemLog(SUCCESS_ERROR, SIM_800 , SERVICE_ERROR);
 }
 
 void sendRequestString(double *externalHum,
@@ -42,34 +39,8 @@ void sendRequestString(double *externalHum,
                        String Guid)
 {
   String req;
-
-
   if (type == ISTSOS_REQUEST)
   {
-
-#ifdef SAVE_LOG_AND_SEND
-
-    dir = SD.open(F("MEM_LOG/ISTSOS"));
-    while (log_send_error_count > 0) {
-      reader = dir.openNextFile();
-      if (!reader)
-        break;
-      printString(F("ISTSOS RESENDING"), reader.name());
-      req = readFileSD(F("MEM_LOG/ISTSOS/"), reader.name());
-      Serial.println(req);
-      if (sendRequstMessage(istserver, isturi, req, true) == SEND_SUCCESS) {
-        if (removeFile(F("MEM_LOG/ISTSOS/"), reader.name()))
-          Serial.println(String(reader.name()) + " Removed");
-        printString(SUCCESSFULL, reader.name());
-        writeFileSD(F("DT_LOG/ISTSOS/"), getFileNameDate(), req);
-        log_send_error_count = LOG_SEND_ERROR_COUNT;
-        continue;
-      } else {
-        log_send_error_count--;
-      }
-    }
-
-#endif
 
     req = String(Guid);
     req.concat(";");
@@ -107,38 +78,15 @@ void sendRequestString(double *externalHum,
       req.concat(*windSpeed);  
     }
 
+    // write to temp log
+    writeFileSD(ISTSOS_MEM_LOG, getFileNameTime() , req);
 
-    if (sendRequstMessage(istserver, isturi, req, true) == SEND_SUCCESS) {
-      writeFileSD(F("DT_LOG/ISTSOS/"), getFileNameDate(), req);
-    } else {
-      writeFileSD(F("MEM_LOG/ISTSOS/"), getFileNameTime() , req);
-    }
-
+    // read and send
+    readAndSend(ISTSOS_MEM_LOG, ISTSOS_DATA_LOG,istserver, isturi,true);
+    
   }
   else if (type == SLPIOT_REQUEST)
   {
-#ifdef SAVE_LOG_AND_SEND
-
-    dir = SD.open(F("MEM_LOG/SLPIOT"));
-    while (log_send_error_count > 0) {
-      reader = dir.openNextFile();
-      if (!reader)
-        break;
-      printString(F("SLPIOT RESENDING"), reader.name());
-      req = readFileSD(F("MEM_LOG/SLPIOT/"), reader.name());
-      Serial.println(req);
-      if (sendRequstMessage(slpserver, slpuri, req, false) == SEND_SUCCESS) {
-        if (removeFile(F("MEM_LOG/SLPIOT/"), reader.name()))
-          Serial.println(String(reader.name()) + " Removed");
-        printString(SUCCESSFULL, reader.name());
-        writeFileSD(F("DT_LOG/SLPIOT/"), getFileNameDate(), req);
-        log_send_error_count = LOG_SEND_ERROR_COUNT;
-        continue;
-      } else {
-        log_send_error_count--;
-      }
-    }
-#endif
 
     req = String(F("{"));
     req.concat("\"GUID\":\"");
@@ -184,15 +132,41 @@ void sendRequestString(double *externalHum,
     req.concat(*battry);
     req.concat("\"}");
 
-    if (sendRequstMessage(slpserver, slpuri, req, false) == SEND_SUCCESS) {
-      writeFileSD(F("DT_LOG/SLPIOT/"), getFileNameDate(), req);
-    } else {
-      writeFileSD(F("MEM_LOG/SLPIOT/"), getFileNameTime(), req);
-    }
+    // write to data file in not send state
+    writeFileSD(SLPIOT_MEM_LOG, getFileNameTime(), req);
+
+    // read files and send
+    readAndSend(SLPIOT_MEM_LOG, SLPIOT_DATA_LOG,slpserver, slpuri,false);
   }
   else
   {
-    printSystemLog("ERROR", "PARMS");
+    printSystemLog(GEN_ERROR,PARAMETER_ERROR);
+  }
+}
+
+void readAndSend(String temp_folder,String log_folder,char server[], char uri[], bool auth){
+
+  String req;
+  dir = SD.open(temp_folder);
+ 
+  while(true){
+    reader = dir.openNextFile();
+    if (!reader)
+      break;
+    
+    printString(temp_folder, reader.name());
+    req = readFileSD(temp_folder, reader.name());
+
+    Serial.println(req);
+
+    if (sendRequstMessage(server,uri,req, auth) == SEND_SUCCESS){
+      printString(SEND_SUCCESSFULL, reader.name());
+      writeFileSD(log_folder, getFileNameDate(), req);
+      removeFile(temp_folder, reader.name());
+    }else{
+      printString(SEND_ERROR, reader.name());
+      break;  
+    }
   }
 }
 
@@ -200,7 +174,7 @@ uint8_t sendRequstMessage(char server_url[], char url[], String message, bool au
 
   uint8_t count = ERROR_REPEATE_COUNT;
   String server = String(server_url);
-  printSystemLog(F("SENDING..."), server);
+  printSystemLog(SENDING, server);
 
   while (count > 0) {
     uint8_t tmp = auth == true ? simServer.executePost(server_url, url, message) : simServer.executePostPure(server_url, url, message);
@@ -209,32 +183,32 @@ uint8_t sendRequstMessage(char server_url[], char url[], String message, bool au
       printSystemLog(SUCCESSFULL, server, DATA_SEND_SUCCESSFULLY);
       return SEND_SUCCESS;
     } else if (tmp == NETWORK_FAILURE) {
-      printSystemLog(F("ERROR"), F("NETWORK_FAILURE"), DATA_SEND_ERROR);
+      printSystemLog(GEN_ERROR, NETWORK_FAILURE, DATA_SEND_ERROR);
       return SEND_ERROR;
     } else if (tmp == GPRS_FAILURE) {
-      printSystemLog(F("ERROR"), F("GPRS_FAILURE"), DATA_SEND_ERROR);
+      printSystemLog(GEN_ERROR, GPRS_FAILURE, DATA_SEND_ERROR);
       return SEND_ERROR;
     } else {
-      printSystemLog(F("ERROR"), F("REMOTE ERROR"), DATA_SEND_ERROR);
+      printSystemLog(GEN_ERROR, REMOTE_ERROR, DATA_SEND_ERROR);
     }
-    printSystemLog(F("RESENDING..."), server);
+    printSystemLog(RESENDING, server);
     count--;
   }
 
-  printSystemLog(F("SEND ERROR"), server, DATA_SEND_ERROR);
+  printSystemLog(SEND_ERROR, server, DATA_SEND_ERROR);
   return SEND_ERROR;
 }
 
 DateTime ntpUpdate()
 {
-  uint32_t *result = simServer.ntpUpdate("metasntp11.admin.ch", 0);
+  uint32_t *result = simServer.ntpUpdate(NTP_UPDATE_URL, 0);
   uint8_t tmp = 5;
   long last = millis();
   if (result == 0)
     tmp = 0;
   while (tmp > 0 && result[0] < 2018)
   {
-    result = simServer.ntpUpdate("metasntp11.admin.ch", 0);
+    result = simServer.ntpUpdate(NTP_UPDATE_URL, 0);
     delay(100);
     if ((millis() - last) > 10000UL) {
       tmp = 0;
