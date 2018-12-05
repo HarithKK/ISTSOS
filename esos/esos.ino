@@ -121,6 +121,11 @@ void loop() {
     printSystemLog(F("Reset Program"), F("Ram Refresh"));
     resetProgram();
   }
+
+  // cycle detect
+  digitalWrite(CYCLE_CLEAR_PIN,LOW);
+  delay(50);
+  digitalWrite(CYCLE_CLEAR_PIN,HIGH);
   Serial.print("#");
 }
 
@@ -532,6 +537,11 @@ void initialize() {
   // SD init
   initSD();
   delay(300);
+
+  // Cycle clear
+
+  pinMode(CYCLE_CLEAR_PIN,OUTPUT);
+  digitalWrite(CYCLE_CLEAR_PIN,HIGH);
 
   // GPRS
   #if defined(ISTSOS) || defined(SLPIOT)

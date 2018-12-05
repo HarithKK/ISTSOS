@@ -16,20 +16,22 @@
 
 #define SERVER "slpiot.org"
 #define REQ_STR "/api/insertData/"
-#define GUID_SLPIOT "5bf82c59-7ec0-4f"
+#define GUID_SLPIOT "8b29c33e-9df0-44"
 
 // For ISTSOS Settings
 
 #define IST_SERVER "geoservice.ist.supsi.ch"
 #define POSTREQ "/4onse/wa/istsos/services/lka/operations/fastinsert"
-#define PROCEDURE "f572d244ee6111e8887c08002745029a"
+#define PROCEDURE "4b6c2eca835f11e8a93608002745029a"
+
+#define NTP_UPDATE_URL "metasntp11.admin.ch"
 
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 // definitins
 #define EXTERNAL_TEMP_PIN 8  // External temperature pin
 #define DHT11_IN_PIN 4       // internal temperature
-#define BUZZER 12             // buzzer pin
+#define BUZZER 19             // buzzer pin
 #define SM_PIN A8              //  for SM sensor
 #define BMP085_ADDRESS 0x77   // bmp sensor Address  
 #define BATT A0                // get battry meter value
@@ -47,11 +49,13 @@
 #define ERROR_REPEATE_COUNT 2 // how much times shoulw try to send
 #define LOG_SEND_ERROR_COUNT 3
 #define NTP_UPDATE 604800UL   // NTP update 7 days
+#define CYCLE_CLEAR_PIN 11  // 50 ms pulse when one cycle off
 
 #define WIN_SPEED_PIN A1       // wind speed pin
 #define WIND_FACTOR 32.2   // 1024 --> 32.2ms-1   
 #define WIND_VOLTAGE_MIN 10  // minimum voltage comes from wind speed sensor
 #define WIND_VOLTAGE_MAX 1023  // maximum voltage comes from wind speed sensor        
+ 
 
 #define ISTSOS_REQUEST 1
 #define SLPIOT_REQUEST 2
@@ -81,8 +85,6 @@
 #define SLPIOT
 #define NTP
 
-//#define SAVE_LOG_AND_SEND
-
 // Sensor Enabling
 #define EXT_TEMP_ENABLE 0
 #define INT_TEMP_ENABLE 0
@@ -96,7 +98,7 @@
 #define WD_ENABLE 0
 #define RG_ENABLE 0
 #define BT_ENABLE 0
-#define WL_ENABLE 1
+#define WL_ENABLE 0
 
 
 #endif
