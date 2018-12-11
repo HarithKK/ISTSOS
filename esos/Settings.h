@@ -22,7 +22,7 @@
 
 #define IST_SERVER "geoservice.ist.supsi.ch"
 #define POSTREQ "/4onse/wa/istsos/services/lka/operations/fastinsert"
-#define PROCEDURE "4b6c2eca835f11e8a93608002745029a"
+#define PROCEDURE "16ae2588fd6411e8887c08002745029a"
 
 #define NTP_UPDATE_URL "metasntp11.admin.ch"
 
@@ -45,8 +45,8 @@
 #define TEMP_UP 37            // upeer temp for the fan
 #define TEMP_DOWN 34          // lower temperature or fan
 #define FAN_PIN 10            // fan pin
-#define TIME_RATE 10           // set as sending after every Time (minutes)
-#define ERROR_REPEATE_COUNT 2 // how much times shoulw try to send
+#define TIME_RATE 1           // set as sending after every Time (minutes)
+#define ERROR_REPEATE_COUNT 1 // how much times shoulw try to send
 #define LOG_SEND_ERROR_COUNT 3
 #define NTP_UPDATE 604800UL   // NTP update 7 days
 #define CYCLE_CLEAR_PIN 11  // 50 ms pulse when one cycle off
@@ -86,17 +86,17 @@
 #define NTP
 
 // Sensor Enabling
-#define EXT_TEMP_ENABLE 0
-#define INT_TEMP_ENABLE 0
-#define EXT_HUM_ENABLE 0
+#define EXT_TEMP_ENABLE 1
+#define INT_TEMP_ENABLE 1
+#define EXT_HUM_ENABLE 1
 #define INT_HUM_ENABLE 0
-#define SM_ENABLE 0
-#define PRESSURE_ENABLE 0
+#define SM_ENABLE 1
+#define PRESSURE_ENABLE 1
 #define ALTITUDE_ENABLE 0
-#define LUX_ENABLE 0
-#define WS_ENABLE 0
-#define WD_ENABLE 0
-#define RG_ENABLE 0
+#define LUX_ENABLE 1
+#define WS_ENABLE 1
+#define WD_ENABLE 1
+#define RG_ENABLE 1
 #define BT_ENABLE 0
 #define WL_ENABLE 0
 
