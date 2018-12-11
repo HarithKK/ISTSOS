@@ -49,34 +49,44 @@ void sendRequestString(double *externalHum,
     if(WL_ENABLE){
       req.concat(",");
       req.concat(*waterLevel);
-    }else{
+    }
+    if(INT_TEMP_ENABLE){
       req.concat(",");
       req.concat(*internalTemp);
-  
+    }
+    if(SM_ENABLE){
       req.concat(",");
       req.concat(*soilMoisture);
-  
+    }
+    if(LUX_ENABLE){
       req.concat(",");
       req.concat(*light_intensity / 1000);
-  
+    }
+    if(PRESSURE_ENABLE){
       req.concat(",");
       req.concat(*pressure / 1000);
-  
+    }
+    if(EXT_HUM_ENABLE){
       req.concat(",");
       req.concat(*externalHum);
-  
+    }
+    if(EXT_TEMP_ENABLE){
       req.concat(",");
       req.concat(*externalTemp);
-  
+    }
+    if(RG_ENABLE){
       req.concat(",");
       req.concat(*rainFall);
-  
+    }
+    if(WD_ENABLE){
       req.concat(",");
       req.concat(*windDirection);
-  
+    }
+    if(WS_ENABLE){
       req.concat(",");
       req.concat(*windSpeed);  
-    }
+    } 
+    
 
     // write to temp log
     writeFileSD(ISTSOS_MEM_LOG, getFileNameTime() , req);
@@ -148,8 +158,13 @@ void readAndSend(String temp_folder,String log_folder,char server[], char uri[],
 
   String req;
   dir = SD.open(temp_folder);
- 
+
+  long last = millis();
   while(true){
+    // Times UP
+    if((millis() - last) > 300000UL){
+      break;  
+    }
     reader = dir.openNextFile();
     if (!reader)
       break;
@@ -157,11 +172,12 @@ void readAndSend(String temp_folder,String log_folder,char server[], char uri[],
     printString(temp_folder, reader.name());
     req = readFileSD(temp_folder, reader.name());
 
+    Serial.print(F("RED Message : "));
     Serial.println(req);
 
     if (sendRequstMessage(server,uri,req, auth) == SEND_SUCCESS){
       printString(SEND_SUCCESSFULL, reader.name());
-      writeFileSD(log_folder, getFileNameDate(), req);
+      writeFileSD(log_folder, reader.name(), req);
       removeFile(temp_folder, reader.name());
     }else{
       printString(SEND_ERROR, reader.name());

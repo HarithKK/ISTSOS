@@ -66,6 +66,7 @@ String readFileSD (String folderpath, String filename) {
   Watchdog.enable(WATCHDOG_TIME_OUT);
   filename = folderpath + filename;
   file = SD.open(filename, FILE_READ);
+  strRead = "";
   if (!file)
     return "No File";
   while (file.available()) {
