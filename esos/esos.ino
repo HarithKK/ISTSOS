@@ -35,6 +35,7 @@ uint8_t is_SI1145_working = 0;
 unsigned long lastSendTime;   // last send Time
 unsigned long currentTimeToSeconds; // 20/10/18
 unsigned long last_ntp_update;
+unsigned long last_reset_time;
 DateTime currentDateTime; // 20/10/2018
 String slpLogTime;// 20/10/2018
 String istsosLogTime;// 20/10/2018
@@ -95,7 +96,7 @@ void setup() {
   saveAndSendData();
   lastSendTime = currentTimeToSeconds;// 20/10/2018
   last_ntp_update = currentTimeToSeconds;// 20/10/2018
-
+  last_reset_time = currentTimeToSeconds;// set reset time initially
 }
 
 void loop() {
@@ -107,6 +108,14 @@ void loop() {
     Serial.println();
     saveAndSendData();
     lastSendTime = currentTimeToSeconds;// 20/10/2018
+  }
+
+  if ((currentTimeToSeconds - last_ntp_update) > NTP_UPDATE) {// 20/10/2018
+    DateTime tsp = ntpUpdate();
+    if (tsp.year() >= 2018) {
+      setNTPTime();
+    }
+    last_ntp_update = currentTimeToSeconds;// 20/10/2018
   }
 
   if ((currentTimeToSeconds - last_ntp_update) > NTP_UPDATE) {// 20/10/2018

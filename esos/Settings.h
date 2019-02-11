@@ -55,7 +55,8 @@
 #define WIND_FACTOR 32.2   // 1024 --> 32.2ms-1   
 #define WIND_VOLTAGE_MIN 10  // minimum voltage comes from wind speed sensor
 #define WIND_VOLTAGE_MAX 1023  // maximum voltage comes from wind speed sensor        
- 
+
+#define RESET_HOUR 0 // reset forcely at 00:00 
 
 #define ISTSOS_REQUEST 1
 #define SLPIOT_REQUEST 2
